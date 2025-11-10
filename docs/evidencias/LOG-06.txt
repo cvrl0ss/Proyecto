@@ -1,0 +1,1 @@
+[LOG-06] status=sent order=ORD-XXXX to=EN_REPARACION ts=2025-11-09T00:00:00.000Z
