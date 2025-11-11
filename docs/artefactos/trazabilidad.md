@@ -1,9 +1,10 @@
-# Matriz de Trazabilidad (Req → Diseño → Prueba → Evidencia)
-
-| Req ID | Diseño/Componente                                       | Caso(s) de prueba | Evidencia    |
-|---|---|---|---|
-| RF2 | `pages/shop/ShopOrderDetail.jsx` (+ `pages/account/ServiceHistory.jsx`) | CP-03, CP-04 | SS-03, SS-04 |
-| RF3 | `pages/shop/ShopDetail.jsx`                                 | CP-05           | SS-05        |
-| RF4 | `services/orders.js::notifyMock()`                          | CP-06           | LOG-06       |
-| RF7 | `components/ReclamoForm.jsx`                                | CP-10           | SS-10        |
-
+| Req ID | Diseño / Componente                                                                                                   | Sprint | Caso(s) de prueba     | Evidencia entregada                                      | Estado     |
+|:-----:|:-----------------------------------------------------------------------------------------------------------------------|:-----:|:----------------------|:---------------------------------------------------------|:-----------|
+| RF1   | `src/pages/Login.jsx`, `src/pages/Register.jsx`, `src/pages/account/AccountHome.jsx`, `src/services/auth.js`           |  S1   | CP-01, CP-02          | SS-01 (login OK), SS-02 (error 401)                     | Hecho      |
+| RF2   | `src/pages/shop/ShopOrderDetail.jsx` (detalle), `src/pages/account/ServiceHistory.jsx` (timeline)                      |  S2   | CP-03, CP-04          | —                                                        | Pendiente  |
+| RF3   | `src/pages/shop/ShopOrderDetail.jsx` (sección presupuesto/ETA)                                                         |  S2   | CP-05                 | —                                                        | Pendiente  |
+| RF4   | `src/services/orders.js` → `pollUpdates()`, `src/pages/account/ServiceHistory.jsx`                                     |  S3   | CP-06                 | —                                                        | Pendiente  |
+| RF5   | `src/components/ServiceReviewForm.jsx`                                                                                 |  S6   | CP-08                 | —                                                        | Pendiente  |
+| RF6   | `src/pages/Talleres.jsx`, `src/pages/shop/ShopDetail.jsx`, `src/services/shops.js` (cotizar + fotos adjuntas)          |  S4   | CP-09, CP-09a, CP-09b | SS-09 (listado), SS-09a (cotizar), SS-09b (adjuntos)     | Hecho      |
+| RF7   | `src/components/ClaimForm.jsx`, `src/components/ClaimList.jsx`                                                         |  S5   | CP-10                 | —                                                        | Pendiente  |
+| RF8   | `src/pages/account/EditProfile.jsx`, `src/pages/account/ChangePassword.jsx`, `src/pages/account/MyVehicles.jsx`        |  S7   | CP-11, CP-12          | SS-11 (perfil OK), SS-12 (clave/vehículos)              | Hecho      |
