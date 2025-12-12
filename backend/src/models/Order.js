@@ -1,7 +1,9 @@
+// backend/src/models/Order.js
 import mongoose from "mongoose";
 
-const { Schema, model, Types } = mongoose;
+const { Schema, model } = mongoose;
 
+// Lista de estados válidos de la orden
 export const ORDER_STATUS = [
   "REQUESTED",     // cliente envía solicitud/cotización
   "CONTACTED",     // taller contactó al cliente
@@ -12,51 +14,85 @@ export const ORDER_STATUS = [
   "CANCELED",      // cancelado
 ];
 
+// Elemento del timeline de la orden
 const timelineItemSchema = new Schema(
   {
     status: { type: String, enum: ORDER_STATUS, required: true },
     note: { type: String, default: "" },
+    at: { type: Date, default: Date.now }, // fecha y hora del cambio
+  },
+  { _id: false }
+);
+
+// Comentario/mensaje del cliente
+const clientMessageSchema = new Schema(
+  {
+    text: { type: String, required: true },
     at: { type: Date, default: Date.now },
   },
   { _id: false }
 );
 
+// Estructura del presupuesto estimado
 const estimateSchema = new Schema(
   {
-    amount: { type: Number, default: 0 }, // 130000
-    breakdown: { type: String, default: "" }, // "Mano de obra: 200k\nRepuestos: 350k"
+    amount: { type: Number, default: 0 },     // monto estimado
+    breakdown: { type: String, default: "" }, // detalle en texto
     currency: { type: String, default: "CLP" },
   },
   { _id: false }
 );
 
-const orderSchema = new mongoose.Schema({
-  customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  shop: { type: mongoose.Schema.Types.ObjectId, ref: "Shop", required: true },
-  vehicle: { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle" },
-  title: String,
-  description: String,
-  contactPhone: String,
-  status: { type: String, default: "REQUESTED" },
-  timeline: [
-    { status: String, note: String, createdAt: { type: Date, default: Date.now } }
-  ],
-  // 👇 AGREGA ESTO AQUÍ
-  photos: [
-    {
-      url: String,           // /uploads/123-foto.jpg
-      originalName: String,  // nombre original
-      size: Number,          // tamaño en bytes
-      mimeType: String       // image/jpeg, image/png, etc.
-    }
-  ],
-}, { timestamps: true });
+// Esquema principal de la orden de servicio
+const orderSchema = new Schema(
+  {
+    customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    shop: { type: Schema.Types.ObjectId, ref: "Shop", required: true },
+    vehicle: { type: Schema.Types.ObjectId, ref: "Vehicle" },
 
-// helper para empujar una etapa al timeline
+    // Mensajes que el cliente envía al taller
+    clientMessages: [clientMessageSchema],
+
+    title: String,
+    description: String,
+    contactPhone: String,
+
+    status: {
+      type: String,
+      enum: ORDER_STATUS,
+      default: "REQUESTED",
+    },
+
+    // Duración estimada en horas (completado por el taller)
+    etaHours: { type: Number },
+
+    // Presupuesto estimado
+    estimate: estimateSchema,
+
+    // Historial de estados / notas
+    timeline: [timelineItemSchema],
+
+    // Fotos del cliente y del taller
+    photos: [
+      {
+        url: String,          // ruta del archivo, por ejemplo /uploads/123-foto.jpg
+        originalName: String, // nombre original del archivo
+        size: Number,         // tamaño en bytes
+        mimeType: String,     // image/jpeg, image/png, etc.
+      },
+    ],
+
+    // Calificación que deja el cliente al finalizar el servicio
+    clientRating: { type: Number, min: 1, max: 5 }, // número de estrellas
+    clientReview: { type: String, default: "" },    // comentario opcional
+  },
+  { timestamps: true }
+);
+
+// Método helper para cambiar estado y agregar al timeline
 orderSchema.methods.pushStatus = function (status, note = "") {
   this.status = status;
   this.timeline.push({ status, note });
 };
 
-export default mongoose.model("Order", orderSchema);
-
+export default model("Order", orderSchema);

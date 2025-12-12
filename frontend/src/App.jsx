@@ -15,22 +15,18 @@ import ChangePassword from "./pages/account/ChangePassword.jsx";
 import MyVehicles from "./pages/account/MyVehicles.jsx";
 import ServiceHistory from "./pages/account/ServiceHistory.jsx";
 
-import AppLayout from "./pages/account/AppLayout.jsx";
+// Dashboard cliente (nuevo)
+import ClientDashboard from "./pages/ClientDashboard.jsx";
+
 import AdminOrders from "./pages/AdminOrders.jsx";
 
 // Panel del taller
 import ShopDashboard from "./pages/shop/ShopDashboard.jsx";
 import ShopOrderDetail from "./pages/shop/ShopOrderDetail.jsx";
+import ShopHistory from "./pages/shop/ShopHistory.jsx";
 
-function ClienteDashboard() {
-  return (
-    <AppLayout active="inicio">
-      <div className="p-2">
-        Dashboard Cliente — aquí verá sus órdenes, estados y presupuesto.
-      </div>
-    </AppLayout>
-  );
-}
+// ya NO necesitamos AppLayout acá
+// import AppLayout from "./pages/account/AppLayout.jsx";
 
 function AdminDashboard() {
   return (
@@ -51,7 +47,7 @@ export default function App() {
       <Route path="/onboarding/vehicle" element={<VehicleStep />} />
 
       {/* dashboards */}
-      <Route path="/cliente" element={<ClienteDashboard />} />
+      <Route path="/cliente" element={<ClientDashboard />} />
       <Route path="/admin" element={<AdminDashboard />} />
 
       {/* talleres (cliente) */}
@@ -68,6 +64,7 @@ export default function App() {
       {/* panel del TALLER */}
       <Route path="/taller" element={<ShopDashboard />} />
       <Route path="/taller/orden/:id" element={<ShopOrderDetail />} />
+      <Route path="/taller/historial" element={<ShopHistory />} />
 
       {/* fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />

@@ -17,7 +17,7 @@ export default function AccountHome() {
     }
 
     me()
-      .then(({ data }) => setUser(data))   // data = { id, name, email, role, ... }
+      .then(({ data }) => setUser(data)) // { id, name, email, role, ... }
       .catch(() => {
         localStorage.removeItem("token");
         nav("/login");
@@ -32,8 +32,10 @@ export default function AccountHome() {
       </div>
     );
   }
-
   if (!user) return null;
+
+  const isClient = user.role === "client";
+  const isShop   = user.role === "shop";
 
   return (
     <AppLayout>
@@ -43,12 +45,14 @@ export default function AccountHome() {
           {user.name?.[0]?.toUpperCase() || "V"}
         </div>
         <div>
-          <div className="text-xl font-semibold">{user.name}</div>
+          <div className="text-xl font-semibold">
+            {isShop ? `Cuenta Taller - ${user.name?.replace(/^Cuenta Taller -\s*/i, "")}` : user.name}
+          </div>
           <div className="text-sm text-gray-500">{user.email}</div>
         </div>
       </div>
 
-      {/* Acciones */}
+      {/* Acciones por rol */}
       <div className="space-y-3">
         <Link
           to="/cuenta/editar"
@@ -56,24 +60,52 @@ export default function AccountHome() {
         >
           ✏️ Editar perfil
         </Link>
+
         <Link
           to="/cuenta/password"
           className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
         >
           🔒 Cambiar contraseña
         </Link>
-        <Link
-          to="/cuenta/vehiculos"
-          className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
-        >
-          🚗 Mis vehículos registrados
-        </Link>
-        <Link
-          to="/cuenta/historial"
-          className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
-        >
-          📄 Historial de servicios
-        </Link>
+
+        {isClient && (
+          <>
+            <Link
+              to="/cuenta/vehiculos"
+              className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
+            >
+              🚗 Mis vehículos registrados
+            </Link>
+            <Link
+              to="/cuenta/historial"
+              className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
+            >
+              📄 Historial de servicios
+            </Link>
+          </>
+        )}
+
+        {isShop && (
+          <>
+            <Link
+              to="/taller"
+              className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
+            >
+              👥 Clientes (órdenes del taller)
+            </Link>
+            <Link
+              to="/taller/historial"
+              className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition"
+            >
+              📄 Historial (terminados)
+            </Link>
+            {/* más adelante:
+            <Link to="/taller/perfil" className="block bg-white rounded-xl shadow p-4 hover:shadow-md transition">
+              🛠️ Editar datos del taller
+            </Link>
+            */}
+          </>
+        )}
 
         <button
           onClick={() => {

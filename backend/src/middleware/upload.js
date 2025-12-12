@@ -1,3 +1,4 @@
+// backend/src/middleware/upload.js
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -18,7 +19,22 @@ const storage = multer.diskStorage({
 });
 
 function fileFilter(_req, file, cb) {
-  const ok = ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype);
+  // para debug: ver exactamente qué mimetype está llegando
+  console.log("Subiendo archivo:", file.originalname, file.mimetype);
+
+  const allowed = [
+    "image/jpeg",
+    "image/jpg",    // algunas cámaras usan image/jpg
+    "image/png",
+    "image/webp",
+    "image/heic",   // típicas fotos de iPhone
+    "image/heif",
+    "image/avif",
+    "image/pjpeg",
+    "image/jfif",
+  ];
+
+  const ok = allowed.includes(file.mimetype);
   cb(ok ? null : new Error("Tipo de archivo no permitido"), ok);
 }
 
@@ -29,4 +45,3 @@ export const multerPhotos = multer({
 });
 
 export const uploadPhotos = multerPhotos.array("photos", 5);
-
